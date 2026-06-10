@@ -1,0 +1,1 @@
+export const BCRYPT_NO_ROUNDS = 12;
