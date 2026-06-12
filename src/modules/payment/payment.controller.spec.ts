@@ -5,14 +5,14 @@ import { PaymentService } from './payment.service';
 describe('PaymentController', () => {
     let controller: PaymentController;
     let mockPaymentService: {
-        payment: jest.Mock;
-        subscriptionStatus: jest.Mock;
+        makePayment: jest.Mock;
+        getSubscriptionStatus: jest.Mock;
     };
 
     beforeEach(async () => {
         mockPaymentService = {
-            payment: jest.fn().mockResolvedValue({ error: false, transactionId: 'tx_123' }),
-            subscriptionStatus: jest.fn().mockResolvedValue({ isActive: true, expiresAt: '2026-12-31T23:59:59Z' }),
+            makePayment: jest.fn().mockResolvedValue({ error: false, transactionId: 'tx_123' }),
+            getSubscriptionStatus: jest.fn().mockResolvedValue({ error: false, body: { isActive: true, expiresAt: '2026-12-31T23:59:59Z' } }),
         };
 
         const module: TestingModule = await Test.createTestingModule({
@@ -25,7 +25,12 @@ describe('PaymentController', () => {
 
     describe('payment', () => {
         it('should return payment response with error false', async () => {
-            const result = await controller.makePayment({ amount: 100, currency: 'USD' });
+            const result = await controller.makePayment({
+                price: 100,
+                unit: 1,
+                name: "sub",
+                img: "http://img.com"
+            });
 
             expect(result).toHaveProperty('error', false);
         });

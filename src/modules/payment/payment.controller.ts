@@ -15,7 +15,7 @@ export class PaymentController {
 
     @Get("subscription-status")
     async getSubscriptionStatus(): Promise<ApiReturn<SubscriptionStatusDto | null>> {
-        return { error: true, body: null };
+        return this.impl.getSubscriptionStatus();
     }
 
     @Post("get-notifs-from-mp")

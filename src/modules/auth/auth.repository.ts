@@ -2,9 +2,14 @@ import { database } from "@/db/connection";
 import { User, user, UserDto, UserUpdateDto } from "@/db/tables/user.table";
 import { Injectable } from "@nestjs/common";
 import { eq, or } from "drizzle-orm";
+import { DrizzleQueryError } from "drizzle-orm/errors";
 import { DatabaseError } from "pg";
 
-export const UNIQUE_VIOLATION_CODES = ["USERNAME_ALREADY_EXISTS", "PHONE_ALREADY_EXISTS", "DUPLICATE_VALUE"];
+export const UNIQUE_VIOLATION_CODES = [
+    "El usuario ya existe",
+    "Este número ya ha sido usado",
+    "usuario duplicado"
+];
 
 @Injectable()
 export class AuthRepository {
@@ -44,8 +49,10 @@ export class AuthRepository {
             return inserted[0] ?? null;
         } catch (err: unknown) {
             // Postgres unique violation
-            if (err instanceof DatabaseError && err.code === "23505") {
-                const detail: string = err.constraint || err.detail || "";
+            if (err instanceof DrizzleQueryError
+                && err.cause instanceof DatabaseError
+                && err.cause.code === "23505") {
+                const detail: string = err.cause.constraint || err.cause.detail || "";
                 if (detail.includes("username") || detail.includes("user_username_key") ) {
                     throw new Error(UNIQUE_VIOLATION_CODES[0]);
                 }
@@ -77,8 +84,10 @@ export class AuthRepository {
 
             return updated[0] ?? null;
         } catch (err: unknown) {
-            if (err instanceof DatabaseError && err.code === "23505") {
-                const detail: string = err.constraint || err.detail || "";
+            if (err instanceof DrizzleQueryError
+                && err.cause instanceof DatabaseError
+                && err.cause.code === "23505") {
+                const detail: string = err.cause.constraint || err.cause.detail || "";
                 if (detail.includes("username") || detail.includes("user_username_key")) {
                     throw new Error(UNIQUE_VIOLATION_CODES[0]);
                 }

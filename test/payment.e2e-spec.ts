@@ -1,13 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
-import { App } from 'supertest/types';
+import { JwtService } from '@nestjs/jwt';
 import { AppModule } from './../src/app.module';
-import { JwtModule, JwtService } from '@nestjs/jwt';
 
-describe('AppController (e2e)', () => {
-  let app: INestApplication<App>;
-  let jwt: JwtService;
+describe('PaymentController (e2e)', () => {
+  let app: INestApplication;
+  let jwtService: JwtService;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -16,19 +15,22 @@ describe('AppController (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     await app.init();
-    jwt = moduleFixture.get<JwtService>(JwtService);
+    jwtService = moduleFixture.get<JwtService>(JwtService);
   });
 
-  it('/ (GET)', async () => {
-    const token = await jwt.signAsync(
+  it('/payment/subscription-status (GET) should return protected data', async () => {
+    const token = await jwtService.signAsync(
       { user: 'user', phone: '956213845', id: 1 },
       { secret: process.env.JWT_SECRET ?? 'test-secret', expiresIn: '1h' },
     );
 
-    return request(app.getHttpServer())
-      .get('/hello')
+    const response = await request(app.getHttpServer())
+      .get('/payment/subscription-status')
       .set('Authorization', `Bearer ${token}`)
-      .expect(200)
+      .expect(200);
+
+    expect(response.body).toHaveProperty('error', false);
+    expect(response.body).toHaveProperty('body.isActive', true);
   });
 
   afterEach(async () => {
