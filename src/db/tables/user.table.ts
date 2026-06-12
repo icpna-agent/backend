@@ -8,8 +8,10 @@ export const user = pgTable(
         password: text("password").notNull(),
         phone: text("phone").unique().notNull(),
         mail: text("mail").notNull(),
+        refreshHash: text("refresh_hash"),
     },
 );
 
 export type User = typeof user.$inferSelect;
 export type UserDto = typeof user.$inferInsert;
+export type UserUpdateDto = Omit<Partial<UserDto>, "id">;

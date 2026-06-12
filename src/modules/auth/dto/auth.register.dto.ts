@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsNotEmpty, IsString } from "class-validator";
+import { IsEmail, IsNotEmpty, IsString, Matches, MinLength } from "class-validator";
 
 export class AuthRegisterDto {
     @ApiProperty({ type: String, required: true })
@@ -10,6 +10,10 @@ export class AuthRegisterDto {
     @ApiProperty({ type: String, required: true })
     @IsString()
     @IsNotEmpty({ message: "PSWD_MUST_NOT_BE_EMPTY" })
+    @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, {
+        message: "PSWD_TOO_EASY",
+    })
+    @MinLength(12, { message: "PSWD_TOO_SHORT" })
     pswd!: string;
 
     @ApiProperty({ type: String, required: true })

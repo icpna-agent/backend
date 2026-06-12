@@ -1,5 +1,5 @@
 import { database } from "@/db/connection";
-import { User, user, UserDto } from "@/db/tables/user.table";
+import { User, user, UserDto, UserUpdateDto } from "@/db/tables/user.table";
 import { Injectable } from "@nestjs/common";
 import { eq, or } from "drizzle-orm";
 import { DatabaseError } from "pg";
@@ -8,6 +8,16 @@ export const UNIQUE_VIOLATION_CODES = ["USERNAME_ALREADY_EXISTS", "PHONE_ALREADY
 
 @Injectable()
 export class AuthRepository {
+    async findById(id: number): Promise<User | null> {
+        const result = await database
+            .select()
+            .from(user)
+            .where(eq(user.id, id))
+            .limit(1);
+        
+        return result[0] ?? null;
+    }
+
     async findOneByUserOrPhone(userOrPhone: string): Promise<User | null> {
         const conditions = 
             or(
@@ -37,6 +47,39 @@ export class AuthRepository {
             if (err instanceof DatabaseError && err.code === "23505") {
                 const detail: string = err.constraint || err.detail || "";
                 if (detail.includes("username") || detail.includes("user_username_key") ) {
+                    throw new Error(UNIQUE_VIOLATION_CODES[0]);
+                }
+                if (detail.includes("phone") || detail.includes("user_phone_key")) {
+                    throw new Error(UNIQUE_VIOLATION_CODES[1]);
+                }
+                throw new Error(UNIQUE_VIOLATION_CODES[2]);
+            }
+
+            throw err;
+        }
+    }
+
+    async updateUser(userId: number, updates: UserUpdateDto): Promise<User | null> {
+        const fieldsToUpdate = Object.fromEntries(
+            Object.entries(updates).filter(([, value]) => value !== undefined),
+        ) as UserUpdateDto;
+
+        if (Object.keys(fieldsToUpdate).length === 0) {
+            return null;
+        }
+
+        try {
+            const updated = await database
+                .update(user)
+                .set(fieldsToUpdate)
+                .where(eq(user.id, userId))
+                .returning();
+
+            return updated[0] ?? null;
+        } catch (err: unknown) {
+            if (err instanceof DatabaseError && err.code === "23505") {
+                const detail: string = err.constraint || err.detail || "";
+                if (detail.includes("username") || detail.includes("user_username_key")) {
                     throw new Error(UNIQUE_VIOLATION_CODES[0]);
                 }
                 if (detail.includes("phone") || detail.includes("user_phone_key")) {

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { AccessTokenPayload } from './modules/auth/auth.service';
+import { AccessTokenPayload } from './modules/auth/dto/auth.return.types';
 
 @Injectable()
 export class AppService {

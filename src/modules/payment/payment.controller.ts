@@ -9,12 +9,17 @@ export class PaymentController {
     constructor(private readonly impl: PaymentService) {}
 
     @Post("make-payment")
-    async makePayment(@Body() paymentDto: PaymentDto): Promise<ApiReturn<{ transactionId: string } | null>> {
-        return { error: true, body: null };
+    async makePayment(@Body() paymentDto: PaymentDto): Promise<ApiReturn<{ mpLink: string } | null>> {
+        return this.impl.makePayment(paymentDto);
     }
 
     @Get("subscription-status")
     async getSubscriptionStatus(): Promise<ApiReturn<SubscriptionStatusDto | null>> {
+        return { error: true, body: null };
+    }
+
+    @Post("get-notifs-from-mp")
+    async getNotificationsFromMp() {
         return { error: true, body: null };
     }
 }

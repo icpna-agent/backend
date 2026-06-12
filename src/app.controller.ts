@@ -1,14 +1,13 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
-import { Public } from './core/decorators/public.decorator';
 import { CurrentUser } from './core/decorators/user.decorator';
-import type { AccessTokenPayload } from './modules/auth/auth.service';
+import type { AccessTokenPayload } from './modules/auth/dto/auth.return.types';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
+  @Get("hello")
   getHello(@CurrentUser() user: AccessTokenPayload): string {
     return this.appService.getHello(user);
   }
