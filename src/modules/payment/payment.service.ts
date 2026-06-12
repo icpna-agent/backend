@@ -8,7 +8,10 @@ export class PaymentService {
     constructor(private readonly repo: PaymentRepository) {}
 
     async makePayment(paymentDto: PaymentDto): Promise<ApiReturn<{ mpLink: string} | null>> {
-        
+        return {
+            error: false,
+            body: null,
+        }
     }
 
     async reactAgainstMpNotif() {
