@@ -1,11 +1,11 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { INestApplication, ExecutionContext } from "@nestjs/common";
 import request from "supertest";
-import { AuthController } from "./auth.controller";
-import { AuthService } from "./auth.service";
-import { AuthLocalGuard } from "./guards/auth.local.guard";
-import { AuthJwtRefreshGuard } from "./guards/auth.refresh.guard";
-import { AuthJwtGuard } from "./guards/auth.jwt.guard";
+import { AuthController } from "../src/modules/auth/auth.controller";
+import { AuthService } from "../src/modules/auth/auth.service";
+import { AuthLocalGuard } from "../src/modules/auth/guards/auth.local.guard";
+import { AuthJwtRefreshGuard } from "../src/modules/auth/guards/auth.refresh.guard";
+import { AuthJwtGuard } from "../src/modules/auth/guards/auth.jwt.guard";
 
 describe('AuthController', () => {
     let authCntrl: AuthController;
