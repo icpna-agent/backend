@@ -1,12 +1,12 @@
-import { config } from "dotenv";
+import { config } from 'dotenv';
 
 config();
 
 export const dbConfig = {
-    host: process.env.DB_HOST ?? "localhost",
-    port: parseInt(process.env.DB_PORT ?? "5432"),
-    user: process.env.DB_USER ?? "user",
-    password: process.env.DB_PASSWORD ?? "",
-    database: process.env.DB_NAME ?? "database",
+    host: process.env.DB_HOST ?? 'localhost',
+    port: parseInt(process.env.DB_PORT ?? '5432'),
+    user: process.env.DB_USER ?? 'user',
+    password: process.env.DB_PASSWORD ?? '',
+    database: process.env.DB_NAME ?? 'database',
     ssl: false, // Disable SSL for local development
 };

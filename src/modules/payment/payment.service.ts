@@ -1,8 +1,8 @@
-import { Injectable } from "@nestjs/common";
-import { PaymentRepository } from "./payment.repository";
-import { PaymentDto } from "./dto/payment.dto";
-import { ApiReturn } from "../auth/dto/auth.return.types";
-import { SubscriptionStatusDto } from "./dto/subscription.status.dto";
+import { Injectable } from '@nestjs/common';
+import { PaymentRepository } from './payment.repository';
+import { PaymentDto } from './dto/payment.dto';
+import { SubscriptionStatusDto } from './dto/subscription.status.dto';
+import { ApiReturn } from '@/core/types/core.types';
 
 @Injectable()
 export class PaymentService {
