@@ -8,8 +8,3 @@ export interface AccessTokenPayload {
     phone: string,
     id: number,
 }
-
-export interface ApiReturn<T> {
-    error: boolean;
-    body: T;
-}
