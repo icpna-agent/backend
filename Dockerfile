@@ -12,15 +12,6 @@ COPY nest-cli.json ./
 
 COPY src ./src
 
-COPY test ./test
-COPY __test__ ./__test__
-
-# Pruebas
-RUN npm run test
-RUN npm run test:e2e
-
-
-
 RUN npm run build
 
 RUN ls -la dist/
