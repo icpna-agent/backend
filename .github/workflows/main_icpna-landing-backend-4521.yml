@@ -9,9 +9,66 @@ on:
       - main
   workflow_dispatch:
 
+concurrency:
+  group: landing-backend-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build:
+  test:
+    name: Test the Docker image before deploying
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USER: admin
+      DB_PASSWORD: admin
+      DB_NAME: backend_database
+    services:
+      postgres:
+        image: postgres:18.1
+        env:
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: admin
+          POSTGRES_DB: backend_database
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U admin -d backend_database"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node runtime
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Prepare test database
+        run: npm run db:create
+
+      - name: Seed test database
+        run: npm run db:seed
+
+      - name: Run unit tests
+        run: npm test -- --runInBand --passWithNoTests
+
+      - name: Run E2E tests
+        run: npm run test:e2e
+
+  build:
+    name: Builds the thing
+    runs-on: ubuntu-latest
+    needs:
+      - test
+
     permissions:
       contents: read #This is required for actions/checkout
 
