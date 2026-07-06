@@ -27,7 +27,9 @@ jobs:
       ADMIN_MAIL: ${{ secrets.ADMIN_MAIL }}
       ADMIN_PSWD: ${{ secrets.ADMIN_PSWD }}
       JWT_SECRET: ${{ secrets.TEST_TOKEN_KEY }}
-      JWT_REFRESH_SECRET:
+      JWT_REFRESH_SECRET: ${{ secrets.TEST_REFRESH_KEY }}
+      ACCESS_TOKEN_VALIDITY_DURATION_IN_SEC: 240
+      REFRESH_TOKEN_VALIDITY_DURATION_IN_SEC: 604800
     services:
       postgres:
         image: postgres:18.1
