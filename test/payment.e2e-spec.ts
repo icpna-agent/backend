@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { JwtService } from '@nestjs/jwt';
-import { AppModule } from './../src/app.module';
+import { AppModule } from '../src/app.module';
 
 describe('PaymentController (e2e)', () => {
   let app: INestApplication;
