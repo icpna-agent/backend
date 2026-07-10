@@ -4,6 +4,8 @@ import { ApiReturn } from './core/types/core.types';
 import { AppHealthStatus, AppHealthStatusInfo } from './app.controller';
 import { performance } from 'node:perf_hooks';
 import { database } from './db/connection';
+import { DrizzleQueryError } from 'drizzle-orm';
+import { DatabaseError } from 'pg';
 
 @Injectable()
 export class AppService {
@@ -24,6 +26,13 @@ export class AppService {
         latency: performance.now() - start,
       };
     } catch (error: unknown) {
+      if (
+        error instanceof DrizzleQueryError
+        && error.cause instanceof DatabaseError
+      ) {
+        const exc = error.cause;
+        console.error("error connecting to database: ", exc.detail);
+      }
       checks['database'] = {
         status: 'down',
         error: 'Connection failed',
