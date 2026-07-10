@@ -1,39 +1,46 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsInt, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsEmail, IsInt, IsOptional, IsString, Min } from "class-validator";
 
-/*export class PaymentDto {
-    @ApiProperty({ type: Number, required: true })
-    @IsNumber()
-    @IsNotEmpty({ message: "AMOUNT_MUST_NOT_BE_EMPTY" })
-    amount!: number;
-
-    @ApiProperty({ type: String, required: true })
-    @IsString()
-    @IsNotEmpty({ message: "CURRENCY_MUST_NOT_BE_EMPTY" })
-    currency!: string;
-
-    @ApiProperty({ type: String, required: true })
-    @IsString()
-    @IsNotEmpty({ message: "PAYMENT_METHOD_MUST_NOT_BE_EMPTY" })
-    paymentMethod!: string;
-}*/
 export class PaymentDto {
-    @ApiProperty({ type: String, required: true })
+    @ApiProperty({
+        example: "ICPNA Assistant - Suscripción mensual",
+        description: "Nombre del producto o plan que verá el usuario en Mercado Pago.",
+    })
     @IsString()
-    name!: string;
+    name = "ICPNA Assistant - Suscripción mensual";
 
-    @ApiProperty({ type: Number, required: true })
+    @ApiProperty({ example: 5, description: "Precio unitario de la suscripción." })
     @IsInt()
+    @Min(1)
     @Type(() => Number)
-    price!: number;
+    price = 5;
 
-    @ApiProperty({ type: Number, required: true })
-    @IsInt()
-    @Type(() => Number)
-    unit!: number;
-
-    @ApiProperty({ type: String, required: true })
+    @ApiPropertyOptional({ example: "PEN", description: "Moneda del pago." })
+    @IsOptional()
     @IsString()
-    img!: string;
+    unit?: string = "PEN";
+
+    @ApiPropertyOptional({
+        example: "https://icpna-assistant.com/logo.png",
+        description: "Imagen opcional del producto para Mercado Pago.",
+    })
+    @IsOptional()
+    @IsString()
+    img?: string;
+
+    @ApiPropertyOptional({ example: "erick", description: "Usuario registrado en la landing." })
+    @IsOptional()
+    @IsString()
+    user?: string;
+
+    @ApiPropertyOptional({ example: "alumno@utp.edu.pe", description: "Correo del pagador." })
+    @IsOptional()
+    @IsEmail()
+    mail?: string;
+
+    @ApiPropertyOptional({ example: "51999999999", description: "Teléfono/WhatsApp del pagador." })
+    @IsOptional()
+    @IsString()
+    phone?: string;
 }

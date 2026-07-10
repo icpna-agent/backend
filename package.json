@@ -19,6 +19,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "db:create": "ts-node -r tsconfig-paths/register src/db/create.ts",
+    "db:reset": "ts-node -r tsconfig-paths/register src/db/reset.ts",
     "db:seed": "ts-node -r tsconfig-paths/register src/db/seed.ts",
     "db:studio": "drizzle-kit studio"
   },

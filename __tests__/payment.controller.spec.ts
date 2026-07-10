@@ -27,7 +27,7 @@ describe('PaymentController', () => {
         it('should return payment response with error false', async () => {
             const result = await controller.makePayment({
                 price: 100,
-                unit: 1,
+                unit: "PEN",
                 name: "sub",
                 img: "http://img.com"
             });

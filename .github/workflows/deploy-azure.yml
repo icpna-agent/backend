@@ -3,10 +3,10 @@ name: Build Docker image and deploy to Azure App Service
 on:
   push:
     branches:
-      - main
+      - prod
   pull_request:
     branches:
-      - main
+      - prod
 
 env:
   AZURE_WEBAPP_NAME: icpna-backend
