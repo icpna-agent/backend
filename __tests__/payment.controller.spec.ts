@@ -25,12 +25,15 @@ describe('PaymentController', () => {
 
     describe('payment', () => {
         it('should return payment response with error false', async () => {
-            const result = await controller.makePayment({
-                price: 100,
-                unit: 1,
-                name: "sub",
-                img: "http://img.com"
-            });
+            const result = await controller.makePayment(
+                {
+                    price: 100,
+                    unit: 1,
+                    name: "sub",
+                    img: "http://img.com"
+                },
+                1,
+            );
 
             expect(result).toHaveProperty('error', false);
         });
@@ -38,11 +41,13 @@ describe('PaymentController', () => {
   
     describe('subscription', () => {
         it('should return subscription status with isActive true and an expiration date', async () => {
-            const result = await controller.getSubscriptionStatus();
+            const result = await controller.getSubscriptionStatus(1);
 
             expect(result).toHaveProperty('body.isActive', true);
-            expect(result).toHaveProperty('body.expiresAt');
-            expect(new Date(result.expiresAt).toString()).not.toBe(null);
+            expect(result).toHaveProperty('body.expiryDate');
+            if (result.body && result.body.expiryDate) {
+                expect(new Date(result.body.expiryDate).toString()).not.toBe('Invalid Date');
+            }
         });
     });
 });
