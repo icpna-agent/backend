@@ -8,6 +8,8 @@ RUN npm ci
 COPY tsconfig*.json ./
 COPY nest-cli.json ./
 COPY src ./src
+COPY drizzle.config.ts ./
+COPY drizzle ./drizzle
 
 RUN npm run build
 
