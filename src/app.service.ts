@@ -30,8 +30,7 @@ export class AppService {
         error instanceof DrizzleQueryError
         && error.cause instanceof DatabaseError
       ) {
-        const exc = error.cause;
-        console.error("error connecting to database: ", exc.detail);
+        console.error("error connecting to database: ", error.cause);
       }
       checks['database'] = {
         status: 'down',
