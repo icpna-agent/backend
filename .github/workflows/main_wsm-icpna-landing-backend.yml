@@ -9,8 +9,72 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: landing-backend-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+    
 jobs:
+  test:
+    name: Test the Docker image before deploying
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USER: admin
+      DB_PASSWORD: admin
+      DB_NAME: backend_database
+      ADMIN_MAIL: ${{ secrets.ADMIN_MAIL }}
+      ADMIN_PSWD: ${{ secrets.ADMIN_PSWD }}
+      JWT_SECRET: ${{ secrets.TEST_TOKEN_KEY }}
+      JWT_REFRESH_SECRET: ${{ secrets.TEST_REFRESH_KEY }}
+      ACCESS_TOKEN_VALIDITY_DURATION_IN_SEC: 240
+      REFRESH_TOKEN_VALIDITY_DURATION_IN_SEC: 604800
+    services:
+      postgres:
+        image: postgres:18.1
+        env:
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: admin
+          POSTGRES_DB: backend_database
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U admin -d backend_database"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node runtime
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Prepare test database
+        run: npm run db:create
+
+      - name: Seed test database
+        run: npm run db:seed
+
+      - name: Run unit tests
+        run: npm test -- --runInBand --passWithNoTests
+
+      - name: Run E2E tests
+        run: npm run test:e2e
+
   build:
+    needs: test
     runs-on: ubuntu-latest
     permissions:
       contents: read #This is required for actions/checkout
@@ -22,18 +86,19 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Log in to container registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io/
-          username: ${{ secrets.AZUREAPPSERVICE_CONTAINERUSERNAME_E1B2557A04F54115B2FB97D47C15ACB2 }}
-          password: ${{ secrets.AZUREAPPSERVICE_CONTAINERPASSWORD_803E9F33F990478786D8E35A37495805 }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push container image to registry
         uses: docker/build-push-action@v3
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ secrets.AZUREAPPSERVICE_CONTAINERUSERNAME_E1B2557A04F54115B2FB97D47C15ACB2 }}/icpna-agent/landing-backend:${{ github.sha }}
+          tags: |
+            ghcr.io/icpna-agent/landing-backend:${{ github.sha }}
           file: ./Dockerfile
 
   deploy:
@@ -49,9 +114,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_6A76E3C7754546BD994B25300063B293 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_C38764DF76A44276B2749200027118B0 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_69CA6B5DF47B4A7980E4260C870729E6 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_6938C77178AC4D0889E416554FA63CA6 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_DCCF327464EE4EB6A51AA695A4C9CA55 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E8A710110CD44DB7ABBA4EA116E87177 }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -59,5 +124,4 @@ jobs:
         with:
           app-name: 'wsm-icpna-landing-backend'
           slot-name: 'Production'
-          images: 'ghcr.io/${{ secrets.AZUREAPPSERVICE_CONTAINERUSERNAME_E1B2557A04F54115B2FB97D47C15ACB2 }}/icpna-agent/landing-backend:${{ github.sha }}'
-          
+          images: 'ghcr.io/icpna-agent/landing-backend:${{ github.sha }}'
