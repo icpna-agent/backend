@@ -9,6 +9,10 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  contents: read
+  packages: write
+
 concurrency:
   group: landing-backend-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -82,18 +86,19 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Log in to container registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
-          registry: mcr.microsoft.com/
-          username: ${{ secrets.AZUREAPPSERVICE_CONTAINERUSERNAME_C8677D318E124D4DA08AF88FC7077998 }}
-          password: ${{ secrets.AZUREAPPSERVICE_CONTAINERPASSWORD_F684F8915DC34683A716E125BA74CEF8 }}
+          registry: ghcr.io/
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push container image to registry
         uses: docker/build-push-action@v3
         with:
           context: .
           push: true
-          tags: mcr.microsoft.com/${{ secrets.AZUREAPPSERVICE_CONTAINERUSERNAME_C8677D318E124D4DA08AF88FC7077998 }}/appsvc/staticsite:${{ github.sha }}
+          tags: |
+            ghcr.io/${{ github.actor }}/landing-backend:${{ github.sha }}
           file: ./Dockerfile
 
   deploy:
@@ -119,5 +124,4 @@ jobs:
         with:
           app-name: 'wsm-icpna-landing-backend'
           slot-name: 'Production'
-          images: 'mcr.microsoft.com/${{ secrets.AZUREAPPSERVICE_CONTAINERUSERNAME_C8677D318E124D4DA08AF88FC7077998 }}/appsvc/staticsite:${{ github.sha }}'
-          
+          images: 'ghcr.io/${{ github.actor }}/landing-backend:${{ github.sha }}'
