@@ -5,11 +5,18 @@ import { PaymentService } from '../src/modules/payment/payment.service';
 
 describe('PaymentService validateInput', () => {
     it('rejects a notification payload whose shape does not match the expected Mercado Pago schema', async () => {
-        const service = new PaymentService({} as any, {
+        const mockRepo = {
+            getPaymentByRequestId: jest.fn().mockResolvedValue(null),
+        };
+
+        const mockConfig = {
             mpAccessToken: 'token',
             webhookSecret: 'secret',
+            mercadoPagoPaymentStatusUrl: 'https://api.mercadopago.com/v1/payments',
             generateMercadoPagoPreferences: jest.fn(),
-        } as any);
+        };
+
+        const service = new PaymentService(mockRepo as any, mockConfig as any);
 
         const request = {
             headers: {
@@ -33,11 +40,30 @@ describe('PaymentService validateInput', () => {
     });
 
     it('returns a 200 OK response for a valid notification payload', async () => {
-        const service = new PaymentService({} as any, {
+        const mockRepo = {
+            getPaymentByRequestId: jest.fn().mockResolvedValue(null),
+            createPayment: jest.fn().mockResolvedValue({ id: 1 }),
+            createSubscription: jest.fn().mockResolvedValue({ id: 1 }),
+        };
+
+        const mockConfig = {
             mpAccessToken: 'token',
             webhookSecret: 'secret',
+            mercadoPagoPaymentStatusUrl: 'https://api.mercadopago.com/v1/payments',
             generateMercadoPagoPreferences: jest.fn(),
+        };
+
+        // Mock global fetch
+        global.fetch = jest.fn().mockResolvedValue({
+            ok: true,
+            json: async () => ({
+                status: 'approved',
+                external_reference: 'user-1',
+                transaction_amount: 100,
+            }),
         } as any);
+
+        const service = new PaymentService(mockRepo as any, mockConfig as any);
 
         const response = {
             status: jest.fn().mockReturnThis(),
@@ -71,5 +97,7 @@ describe('PaymentService validateInput', () => {
 
         expect(response.status).toHaveBeenCalledWith(HttpStatus.OK);
         expect(response.send).toHaveBeenCalled();
+        expect(mockRepo.createPayment).toHaveBeenCalled();
+        expect(mockRepo.createSubscription).toHaveBeenCalled();
     });
 });
