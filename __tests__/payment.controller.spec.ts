@@ -12,7 +12,7 @@ describe('PaymentController', () => {
     beforeEach(async () => {
         mockPaymentService = {
             makePayment: jest.fn().mockResolvedValue({ error: false, transactionId: 'tx_123' }),
-            getSubscriptionStatus: jest.fn().mockResolvedValue({ error: false, body: { isActive: true, expiresAt: '2026-12-31T23:59:59Z' } }),
+            getSubscriptionStatus: jest.fn().mockResolvedValue({ error: false, body: { isActive: true, status: 'active', plan: 'basic', expiryDate: '2026-12-31T23:59:59Z' } }),
         };
 
         const module: TestingModule = await Test.createTestingModule({

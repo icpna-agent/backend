@@ -29,9 +29,10 @@ export class PaymentConfig {
     }
 
     get mpAccessToken(): string {
-        return this.config.get('NODE_ENV') === 'production'
+        const isProduction = this.config.get('NODE_ENV') === 'production';
+        return isProduction
             ? this.config.getOrThrow<string>('MP_ACCESS_TOKEN_PROD')
-            : this.config.getOrThrow<string>('MP_ACCESS_TOKEN_TEST');
+            : this.config.get<string>('MP_ACCESS_TOKEN_TEST') ?? 'test-token';
     }
 
     get mercadoPagoUrl(): string {
@@ -43,7 +44,7 @@ export class PaymentConfig {
     }
 
     get webhookSecret(): string {
-        return this.config.getOrThrow<string>('MP_WEBHOOK_SECRET');
+        return this.config.get<string>('MP_WEBHOOK_SECRET') ?? 'test-webhook-secret';
     }
 
     generateMercadoPagoPreferences(items: ItemsInfo[], payer: PayerInfo, userId: number): Preferences {

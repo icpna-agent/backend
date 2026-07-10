@@ -23,6 +23,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
+      NODE_ENV: development
+      PORT: 3000
       DB_HOST: localhost
       DB_PORT: 5432
       DB_USER: admin
@@ -34,6 +36,17 @@ jobs:
       JWT_REFRESH_SECRET: ${{ secrets.TEST_REFRESH_KEY }}
       ACCESS_TOKEN_VALIDITY_DURATION_IN_SEC: 240
       REFRESH_TOKEN_VALIDITY_DURATION_IN_SEC: 604800
+
+      ENGINE_HOST: ${{ secrets.ENGINE_HOST }}
+      LANDING_PAGE: ${{ secrets.LANDING_PAGE }}
+      LANDING_MP_SUCCESS_PATH: success
+      LANDING_MP_PENDING_PATH: pending
+      LANDING_MP_FAILURE_PATH: failure
+
+      MP_WEBHOOK_SECRET: ${{ secrets.MP_WEBHOOK_SECRET }}
+      MP_ACCESS_TOKEN_TEST: ${{ secrets.MP_ACCESS_TOKEN_TEST }}
+      ITSELF: http://localhost:3000
+
     services:
       postgres:
         image: postgres:18.1
