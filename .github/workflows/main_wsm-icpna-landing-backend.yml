@@ -98,7 +98,7 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ vars.GHCR_OWNER }}/landing-backend:${{ github.sha }}
+            ghcr.io/icpna-agent/landing-backend:${{ github.sha }}
           file: ./Dockerfile
 
   deploy:
@@ -124,4 +124,4 @@ jobs:
         with:
           app-name: 'wsm-icpna-landing-backend'
           slot-name: 'Production'
-          images: 'ghcr.io/${{ vars.GHCR_OWNER }}/landing-backend:${{ github.sha }}'
+          images: 'ghcr.io/icpna-agent/landing-backend:${{ github.sha }}'
