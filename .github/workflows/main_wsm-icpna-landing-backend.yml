@@ -113,7 +113,7 @@ jobs:
       - name: Check Azure Secrets
         run: |
           [ -z "${{ secrets.AZUREAPPSERVICE_CLIENTID_6A76E3C7754546BD994B25300063B293 }}" ] && echo "CLIENT_ID missing"
-          [ -z "${{ secrets.AZUREAPPSERVICE_TENANTID_C64323C125A146239CC0BFEFC27C883A }}" ] && echo "TENANT_ID missing"
+          [ -z "${{ secrets.AZUREAPPSERVICE_TENANTID_C38764DF76A44276B2749200027118B0 }}" ] && echo "TENANT_ID missing"
           [ -z "${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_69CA6B5DF47B4A7980E4260C870729E6 }}" ] && echo "SUBSCRIPTION_ID missing"
       
       - name: Login to Azure
