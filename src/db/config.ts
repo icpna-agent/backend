@@ -8,5 +8,7 @@ export const dbConfig = {
     user: process.env.DB_USER ?? 'user',
     password: process.env.DB_PASSWORD ?? '',
     database: process.env.DB_NAME ?? 'database',
-    ssl: false, // Disable SSL for local development
+    ssl: {
+        rejectUnauthorized: false,
+    }
 };
