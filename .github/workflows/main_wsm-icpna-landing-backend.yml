@@ -89,8 +89,8 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ghcr.io/
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: WettiestMan
+          password: ${{ secrets.GHCR_PAT }}
 
       - name: Build and push container image to registry
         uses: docker/build-push-action@v3
@@ -98,7 +98,7 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/icpna-agent/landing-backend:${{ github.sha }}
+            ghcr.io/wettiestman/landing-backend:${{ github.sha }}
           file: ./Dockerfile
 
   deploy:
@@ -124,4 +124,4 @@ jobs:
         with:
           app-name: 'wsm-icpna-landing-backend'
           slot-name: 'Production'
-          images: 'ghcr.io/icpna-agent/landing-backend:${{ github.sha }}'
+          images: 'ghcr.io/wettiestman/landing-backend:${{ github.sha }}'
