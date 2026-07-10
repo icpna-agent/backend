@@ -8,8 +8,6 @@ RUN npm ci
 COPY tsconfig*.json ./
 COPY nest-cli.json ./
 COPY src ./src
-COPY drizzle.config.ts ./
-COPY drizzle ./drizzle
 
 RUN npm run build
 
@@ -23,6 +21,9 @@ COPY package*.json ./
 RUN npm ci --omit=dev && npm cache clean --force
 
 COPY --from=builder /app/dist ./dist
+
+COPY drizzle.config.ts ./
+COPY drizzle ./drizzle
 
 EXPOSE 3000
 
