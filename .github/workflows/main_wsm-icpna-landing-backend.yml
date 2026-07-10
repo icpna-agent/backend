@@ -91,6 +91,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read #This is required for actions/checkout
+      packages: read #This is required for migrations
 
     steps:
       - uses: actions/checkout@v4
@@ -113,6 +114,17 @@ jobs:
           tags: |
             ghcr.io/wettiestman/landing-backend:${{ github.sha }}
           file: ./Dockerfile
+      
+      - name: Build the database
+        run: |
+          docker run --rm \
+            -e DB_HOST=${{ secrets.PROD_DB_HOST }} \
+            -e DB_PORT=${{ secrets.PROD_DB_PORT }} \
+            -e DB_USER=${{ secrets.PROD_DB_USER }} \
+            -e DB_PASSWORD=${{ secrets.PROD_DB_PASSWORD }} \
+            -e DB_NAME=${{ secrets.PROD_DB_NAME }} \
+            ghcr.io/wettiestman/landing-backend:${{ github.sha }} \
+            npm run db:migrate
 
   deploy:
     runs-on: ubuntu-latest
@@ -120,7 +132,7 @@ jobs:
       id-token: write #This is required for requesting the JWT
       contents: read #This is required for actions/checkout
 
-    needs: build
+    needs: build-database
     
     steps:
       - name: Login to Azure
