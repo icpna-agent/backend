@@ -8,7 +8,7 @@ export const dbConfig = {
     user: process.env.DB_USER ?? 'user',
     password: process.env.DB_PASSWORD ?? '',
     database: process.env.DB_NAME ?? 'database',
-    ssl: {
+    ssl: process.env.NODE_ENV === 'production' ? {
         rejectUnauthorized: false,
-    }
+    } : false,
 };
