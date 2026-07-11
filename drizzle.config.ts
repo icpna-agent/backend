@@ -1,4 +1,4 @@
-import { dbConfig } from "@/db/config";
+//import { dbConfig } from "@/db/config";
 import { Config } from "drizzle-kit";
 
 export default {
