@@ -22,7 +22,7 @@
     "db:seed": "ts-node -r tsconfig-paths/register src/db/seed.ts",
     "db:studio": "drizzle-kit studio",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate"
+    "db:migrate": "drizzle-kit migrate --config=drizzle.config.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
