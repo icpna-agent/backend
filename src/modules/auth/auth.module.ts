@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { AuthRepository } from './auth.repository';
+import { AuthRepository } from '@repositories/auth.repository';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthLocalStrategy } from './strategies/auth.local.strategy';
 import { AuthJwtStrategy } from './strategies/auth.jwt.strategy';

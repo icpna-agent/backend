@@ -1,5 +1,5 @@
 import { Client } from "pg";
-import { dbConfig } from "./config";
+import { dbConfig } from "@db/config.db";
 import { execSync } from "child_process";
 
 async function createDatabase() {

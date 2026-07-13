@@ -1,7 +1,7 @@
-import { database } from '@/db/connection';
-import { User, user, UserDto, UserUpdateDto } from '@/db/tables/user.table';
+import { database } from '@db/connection.db';
+import { User, user, UserDto, UserUpdateDto } from '@db/tables/user.table';
 import { Injectable } from '@nestjs/common';
-import { eq, or } from 'drizzle-orm';
+import { and, eq, isNull, or } from 'drizzle-orm';
 import { DrizzleQueryError } from 'drizzle-orm/errors';
 import { DatabaseError } from 'pg';
 
@@ -17,7 +17,7 @@ export class AuthRepository {
         const result = await database
             .select()
             .from(user)
-            .where(eq(user.id, id))
+            .where(and(eq(user.id, id), isNull(user.deletedAt)))
             .limit(1);
         
         return result[0] ?? null;
@@ -33,7 +33,7 @@ export class AuthRepository {
         const result = await database
             .select()
             .from(user)
-            .where(conditions)
+            .where(and(conditions, isNull(user.deletedAt)))
             .limit(1);
         return result[0] ?? null;
     }
@@ -78,8 +78,8 @@ export class AuthRepository {
         try {
             const updated = await database
                 .update(user)
-                .set(fieldsToUpdate)
-                .where(eq(user.id, userId))
+                .set({ ...fieldsToUpdate, updatedAt: new Date() })
+                .where(and(eq(user.id, userId), isNull(user.deletedAt)))
                 .returning();
 
             return updated[0] ?? null;

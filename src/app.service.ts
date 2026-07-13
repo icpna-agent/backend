@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { AccessTokenPayload } from './modules/auth/dto/auth.return.types';
-import { ApiReturn } from './core/types/core.types';
+import { AccessTokenPayload } from '@modules/auth/dto/auth.return.types';
+import { ApiReturn } from '@core/types/core.types';
 import { AppHealthStatus, AppHealthStatusInfo } from './app.controller';
 import { performance } from 'node:perf_hooks';
-import { database } from './db/connection';
+import { database } from '@db/connection.db';
 
 @Injectable()
 export class AppService {

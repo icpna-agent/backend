@@ -1,4 +1,4 @@
-import { AccessTokenPayload } from "@/modules/auth/dto/auth.return.types";
+import { AccessTokenPayload } from "@modules/auth/dto/auth.return.types";
 import { createParamDecorator, ExecutionContext } from "@nestjs/common";
 
 export const CurrentUser = createParamDecorator(

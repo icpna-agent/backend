@@ -1,13 +1,13 @@
 import { ConflictException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
-import { AuthRepository, UNIQUE_VIOLATION_CODES } from './auth.repository';
+import { AuthRepository, UNIQUE_VIOLATION_CODES } from '@repositories/auth.repository';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@/db/tables/user.table';
+import { User } from '@db/tables/user.table';
 import { compare, hash } from 'bcrypt';
 import { AccessTokenPayload, AuthLoginToken } from './dto/auth.return.types';
 import { AuthRegisterDto } from './dto/auth.register.dto';
 import { BCRYPT_NO_ROUNDS } from './utils/auth.constants';
 import { ConfigService } from '@nestjs/config';
-import { ApiReturn } from '@/core/types/core.types';
+import { ApiReturn } from '@core/types/core.types';
 
 @Injectable()
 export class AuthService {
@@ -82,7 +82,7 @@ export class AuthService {
             throw new UnauthorizedException('No autorizado');
         }
 
-        const isValid = compare(refresh, user.refreshHash);
+        const isValid = await compare(refresh, user.refreshHash);
 
         if (!isValid) {
             throw new UnauthorizedException('Sesión inválida');

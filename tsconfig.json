@@ -5,6 +5,7 @@
     "resolvePackageJsonExports": true,
     "esModuleInterop": true,
     "isolatedModules": true,
+    "rootDir": "src",
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
@@ -15,6 +16,7 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
+    "tsBuildInfoFile": "dist/tsconfig.build.tsbuildinfo",
     "skipLibCheck": true,
     "strictNullChecks": true,
     "forceConsistentCasingInFileNames": true,
@@ -22,6 +24,15 @@
     "strictBindCallApply": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
+      "@core/*": ["src/core/*"],
+      "@db/*": ["src/db/*"],
+      "@seeds/*": ["src/seeds/*"],
+      "@modules/*": ["src/modules/*"],
+      "@repositories/*": ["src/repositories/*"],
+      "@controllers/*": ["src/controllers/*"],
+      "@services/*": ["src/services/*"],
+      "@utils/*": ["src/utils/*"],
+      "@config/*": ["src/config/*"],
       "@/*": ["src/*"]
     }
   },
@@ -29,5 +40,7 @@
     "include": [
       "jest"
     ]
-  }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "**/*.spec.ts"]
 }

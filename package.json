@@ -18,9 +18,9 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "db:create": "ts-node -r tsconfig-paths/register src/db/create.ts",
-    "db:reset": "ts-node -r tsconfig-paths/register src/db/reset.ts",
-    "db:seed": "ts-node -r tsconfig-paths/register src/db/seed.ts",
+    "db:create": "ts-node -r tsconfig-paths/register src/db/create.db.ts",
+    "db:reset": "ts-node -r tsconfig-paths/register src/db/reset.db.ts",
+    "db:seed": "ts-node -r tsconfig-paths/register src/db/seed.db.ts",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
@@ -90,6 +90,15 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "moduleNameMapper": {
+      "^@core/(.*)$": "<rootDir>/../src/core/$1",
+      "^@db/(.*)$": "<rootDir>/../src/db/$1",
+      "^@seeds/(.*)$": "<rootDir>/../src/seeds/$1",
+      "^@modules/(.*)$": "<rootDir>/../src/modules/$1",
+      "^@repositories/(.*)$": "<rootDir>/../src/repositories/$1",
+      "^@controllers/(.*)$": "<rootDir>/../src/controllers/$1",
+      "^@services/(.*)$": "<rootDir>/../src/services/$1",
+      "^@utils/(.*)$": "<rootDir>/../src/utils/$1",
+      "^@config/(.*)$": "<rootDir>/../src/config/$1",
       "@/(.*)": "<rootDir>/../src/$1"
     },
     "collectCoverageFrom": [

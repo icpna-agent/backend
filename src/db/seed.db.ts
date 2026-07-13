@@ -1,4 +1,4 @@
-import { seedUsers } from "@/seeds/user.seed";
+import { seedUsers } from "@seeds/user.seed";
 
 async function seed() {
     try {

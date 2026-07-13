@@ -1,6 +1,6 @@
-import { database } from "@/db/connection";
-import { user, UserDto } from "@/db/tables/user.table";
-import { BCRYPT_NO_ROUNDS } from "@/modules/auth/utils/auth.constants";
+import { database } from "@db/connection.db";
+import { user, UserDto } from "@db/tables/user.table";
+import { BCRYPT_NO_ROUNDS } from "@modules/auth/utils/auth.constants";
 import * as Bcrypt from "bcrypt";
 
 export async function seedUsers() {

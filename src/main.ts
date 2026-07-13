@@ -1,15 +1,21 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
-import { setupSwagger } from './core/swagger.config';
-import { setupCors } from './core/cors.config';
+import { setupSwagger } from '@core/swagger.core';
+import { setupCors } from '@core/cors.core';
+import { setupTransformer } from '@core/transformer.core';
+import { config } from 'dotenv';
+import { json, urlencoded } from 'express';
+
+config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  app.use(json({ limit: '50mb' }));
+  app.use(urlencoded({ limit: '50mb', extended: true }));
   
   setupSwagger(app);
   setupCors(app);
+  setupTransformer(app);
   
   await app.listen(process.env.PORT ?? 3000);
 }

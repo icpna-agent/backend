@@ -7,12 +7,18 @@ describe('PaymentController', () => {
     let mockPaymentService: {
         makePayment: jest.Mock;
         getSubscriptionStatus: jest.Mock;
+        getPaymentHistory: jest.Mock;
+        syncPayment: jest.Mock;
+        handleMercadoPagoWebhook: jest.Mock;
     };
 
     beforeEach(async () => {
         mockPaymentService = {
             makePayment: jest.fn().mockResolvedValue({ error: false, transactionId: 'tx_123' }),
-            getSubscriptionStatus: jest.fn().mockResolvedValue({ error: false, body: { isActive: true, expiresAt: '2026-12-31T23:59:59Z' } }),
+            getSubscriptionStatus: jest.fn().mockResolvedValue({ error: false, body: { isActive: true, expiryDate: '2026-12-31T23:59:59Z' } }),
+            getPaymentHistory: jest.fn().mockResolvedValue({ error: false, body: [] }),
+            syncPayment: jest.fn(),
+            handleMercadoPagoWebhook: jest.fn(),
         };
 
         const module: TestingModule = await Test.createTestingModule({
@@ -25,12 +31,7 @@ describe('PaymentController', () => {
 
     describe('payment', () => {
         it('should return payment response with error false', async () => {
-            const result = await controller.makePayment({
-                price: 100,
-                unit: "PEN",
-                name: "sub",
-                img: "http://img.com"
-            });
+            const result = await controller.makePayment(1);
 
             expect(result).toHaveProperty('error', false);
         });
@@ -38,11 +39,11 @@ describe('PaymentController', () => {
   
     describe('subscription', () => {
         it('should return subscription status with isActive true and an expiration date', async () => {
-            const result = await controller.getSubscriptionStatus();
+            const result = await controller.getSubscriptionStatus(1);
 
             expect(result).toHaveProperty('body.isActive', true);
-            expect(result).toHaveProperty('body.expiresAt');
-            expect(new Date(result.expiresAt).toString()).not.toBe(null);
+            expect(result).toHaveProperty('body.expiryDate');
+            expect(new Date(result.body.expiryDate).toString()).not.toBe('Invalid Date');
         });
     });
 });

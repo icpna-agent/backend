@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 import { PaymentController } from "./payment.controller";
 import { PaymentService } from "./payment.service";
-import { PaymentRepository } from "./payment.repository";
+import { PaymentRepository } from "@repositories/payment.repository";
 
 @Module({
     controllers: [PaymentController],
