@@ -45,7 +45,7 @@ describe('PaymentService', () => {
   beforeEach(() => {
     originalFetch = global.fetch;
     process.env.MERCADO_PAGO_ACCESS_TOKEN = 'test-token';
-    process.env.FRONTEND_URL = 'https://front.icpna.test';
+    process.env.LANDING_URL = 'https://front.icpna.test';
     process.env.BACKEND_URL = 'https://api.icpna.test';
     delete process.env.MERCADO_PAGO_USE_SANDBOX_LINK;
 
@@ -66,7 +66,7 @@ describe('PaymentService', () => {
   afterEach(() => {
     global.fetch = originalFetch;
     delete process.env.MERCADO_PAGO_ACCESS_TOKEN;
-    delete process.env.FRONTEND_URL;
+    delete process.env.LANDING_URL;
     delete process.env.BACKEND_URL;
     delete process.env.MERCADO_PAGO_USE_SANDBOX_LINK;
   });

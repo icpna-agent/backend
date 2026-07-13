@@ -77,7 +77,7 @@ export class PaymentService {
     if (!user) throw new NotFoundException('Usuario no encontrado');
 
     const frontendUrl = this.normalizeUrl(
-      process.env.FRONTEND_URL ?? 'http://localhost:5173',
+      process.env.LANDING_URL ?? 'http://localhost:5173',
     );
     const reusable = await this.repo.findReusablePending(
       userId,
@@ -458,7 +458,7 @@ export class PaymentService {
     if (!engineUserEnableUrl) {
       return {
         enabled: false,
-        reason: 'ENGINE_HOST or ENGINE_USER_ENABLE_URL is not configured',
+        reason: 'ENGINE_HOST is not configured',
       };
     }
     if (!phone)
@@ -485,10 +485,6 @@ export class PaymentService {
   }
 
   private getEngineUserEnableUrl(): string | undefined {
-    if (process.env.ENGINE_USER_ENABLE_URL) {
-      return process.env.ENGINE_USER_ENABLE_URL;
-    }
-
     const engineHost = process.env.ENGINE_HOST;
     if (!engineHost) return undefined;
 
