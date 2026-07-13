@@ -126,7 +126,6 @@ export class PaymentService {
       ],
       payer: {
         name: user.username,
-        email: user.mail,
         phone: { number: user.phone },
       },
       ...returnSettings,

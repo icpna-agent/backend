@@ -9,6 +9,11 @@ type MercadoPagoPreferencePayload = {
   };
   auto_return?: string;
   external_reference: string;
+  payer?: {
+    email?: string;
+    name?: string;
+    phone?: { number?: string };
+  };
 };
 
 describe('PaymentService', () => {
@@ -94,6 +99,11 @@ describe('PaymentService', () => {
       pending: 'https://front.icpna.test/success?result=pending',
     });
     expect(requestBody.auto_return).toBe('approved');
+    expect(requestBody.payer).toEqual({
+      name: user.username,
+      phone: { number: user.phone },
+    });
+    expect(requestBody.payer?.email).toBeUndefined();
     expect(repository.updatePayment).toHaveBeenCalledWith(
       pendingPayment.id,
       expect.objectContaining({
